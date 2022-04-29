@@ -1,5 +1,5 @@
 #Script uses Absolute paths
-#Copies Students JPEG photo files from ic-vision SchoolFiles folder to the ic-comm Destiny Folder
+#Copies Students JPEG photo files from SchoolFiles folder to the Destiny Folder
 #Calls the BuildMapFile script to build and zip required files
 #Author: grdsystems
 #Date:  04/27/2022 
