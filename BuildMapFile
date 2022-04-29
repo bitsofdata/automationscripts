@@ -1,0 +1,72 @@
+#Script that creates a fixed width file and zips the photos and map file.  Each zip created is based on last three chars of parent folder name
+
+#Author: grdsystems
+#Date:  04/27/2022 
+#Version: 1.0
+
+#Global variable that uses *wildcard* to traverse each school's Photo folder
+
+$path1 = dir G:\Destiny\*\PHOTOS -Directory
+
+#Function to create the fixed width idlink.txt file
+
+function BuildMapFile {
+
+    
+
+    foreach ($d in $path1) {
+
+        #Resets idlink.txt file and temporary element file
+        if (test-path -path $d\idtemp.txt) {
+            Remove-Item -Path $d\idtemp.txt
+        }
+        if (test-path -path $d\idinfo.txt) {
+            Remove-Item -Path $d\idlink.txt
+        }
+        if (test-path -path $d\*.Zip) {
+            Remove-Item -Path $d\*.Zip
+        }
+
+        #Param init
+        #Creates temporary element file
+        #iterates each element entry and formats each line per Patron instructions and appends to the idinfo.txt file
+    
+        $data = get-childitem -filter *.jpg -LiteralPath $d | Select-Object -ExpandProperty Name | Out-File  "$d\idtemp.txt"  
+        $temp = get-content "$d\idtemp.txt" #Gets element info
+        $filepath = "$d\idlink.txt"  
+
+        #nested for loop that iterates the $temp file and creates the file as Ex.  4300123456,4300123456.JPG
+        foreach ($line in $temp) { 
+            
+            Add-Content -Path $filepath -Encoding UTF8 -Value ($line.substring(0,10) + "," + $line) 
+        }
+
+    }
+}
+
+#Function to Compress Files
+#extracts the school shortname for @compress file name convention
+
+function CompressBot {
+
+    foreach ($d in $path1) {
+    $last_three = ("$d" -split '\\')[3].Substring(5) 
+    
+            $compress = @{
+                Path             = "$d\idlink.txt", "$d\*.jpg"
+                CompressionLevel = "Fastest"
+                DestinationPath  = "$d\$last_three.Zip"
+               }
+            Compress-Archive @compress -Force
+
+        }
+}
+
+
+#Function call to Build the Patron Map File
+BuildMapFile
+#Function call to Zip photos and map file
+CompressBot
+
+
+
