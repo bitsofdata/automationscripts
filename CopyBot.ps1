@@ -6,7 +6,7 @@
 #Version: 1.0
 
 $source = "E:\SchoolFiles\"
-$destination = "G:\ED_TECH\Destiny\"
+$destination = "G:\Destiny\"
 
 
 #Use windows robocopy utility to traverse SchooFiles folder structure and pull .JPG files, filters out non-photo folders. 
